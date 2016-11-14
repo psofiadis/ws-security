@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="application" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="file" value="./logs/application.log"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS}  %-5p --- [%t] %l  : %m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="csvlog" class="org.apache.log4j.RollingFileAppender">
+        <param name="file" value="./logs/csv.log"/>
+        <param name="Append" value="false" />
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%m%n"/>
+        </layout>
+    </appender>
+
+    <appender name="output" class="org.apache.log4j.ConsoleAppender">
+        <param name="target" value="System.out"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss,SSS}  %-5p --- [%t] %l  : %m%n"/>
+        </layout>
+    </appender>
+
+    <!-- Application Loggers -->
+    <logger name="com.adva.mtosi.server" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="application"/>
+    </logger>
+
+    <logger name="com.adva.mtosi.log" additivity="false">
+        <level value="debug"/>
+        <appender-ref ref="csvlog"/>
+    </logger>
+
+    <logger name="org.apache.cxf" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="application"/>
+    </logger>
+
+
+    <logger name="log4j.rootLogger" additivity="false">
+        <level value="info"/>
+        <appender-ref ref="application"/>
+    </logger>
+
+    <!-- 3rdparty Loggers -->
+    <logger name="org.springframework.core">
+        <level value="warn"/>
+    </logger>
+
+    <logger name="org.springframework.beans">
+        <level value="warn"/>
+    </logger>
+
+    <logger name="org.springframework.context">
+        <level value="warn"/>
+    </logger>
+
+    <logger name="org.springframework.web">
+        <level value="warn"/>
+    </logger>
+
+    <!-- Root Logger -->
+    <root>
+        <priority value="error"/>
+        <appender-ref ref="application"/>
+    </root>
+
+</log4j:configuration>
