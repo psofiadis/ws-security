@@ -25,7 +25,7 @@ public final class NotificationMainHandler {
           UIManager.setLookAndFeel("com.jgoodies.looks.windows.WindowsLookAndFeel");
         } catch (Exception e) {}
         JFrame frame = new JFrame();
-        frame.setTitle("Notification Receiver :: ver.0.1.1");
+        frame.setTitle("Mtosi Security :: ver.0.1.1");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         java.util.List notifications = Notification.NOTIFICATIONS;
         notificationManager = new NotificationManager(notifications);

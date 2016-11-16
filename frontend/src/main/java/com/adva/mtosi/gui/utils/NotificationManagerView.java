@@ -30,16 +30,19 @@
 
 package com.adva.mtosi.gui.utils;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 
+import com.adva.mtosi.server.SecurityImpl;
 import com.jgoodies.binding.adapter.SingleListSelectionAdapter;
 import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.builder.PanelBuilder;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
+import javafx.scene.control.ComboBox;
+
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Builds a user interface for managing Notifications using a table to display
@@ -52,7 +55,7 @@ import com.jgoodies.forms.layout.FormLayout;
  * @see com.jgoodies.binding.PresentationModel
  */
 
-public final class NotificationManagerView {
+public final class NotificationManagerView implements ActionListener {
     
     /**
      * Provides a list of Notification with selection and Action
@@ -65,6 +68,12 @@ public final class NotificationManagerView {
     private JButton editButton;
     private JButton deleteButton;
     private JButton sendRequestButton;
+    String[] operationList = { "getAllManagedElements", "createManagedElement" };
+    private JComboBox operation = new JComboBox(operationList);
+
+
+    private JLabel hostname = new JLabel("Hostname:"), portNumber =new JLabel("Port number:"), userName = new JLabel("Username:"),passwordType = new JLabel("Password type:");
+    private TextField hostnameTxt = new TextField("localhost"), portNumberTxt =new TextField("8443"), userNameTxt = new TextField(), passwordTypeTxt = new TextField("PasswordText");
 
  
     // Instance Creation ******************************************************
@@ -84,21 +93,34 @@ public final class NotificationManagerView {
      *  Creates and intializes the UI components.
      */
     private void initComponents() {
-        notificationTable = new JTable();
-        notificationTable.setModel(NotificationUtils.createNotificationTableModel(
-                notificationManagerModel.getNotificationSelection()));
-        notificationTable.setSelectionModel(
-                new SingleListSelectionAdapter(
-                notificationManagerModel.getNotificationSelection().getSelectionIndexHolder()));
-        
-        newButton = new JButton(notificationManagerModel.getNewAction());
-        editButton = new JButton(notificationManagerModel.getEditAction());
-        deleteButton = new JButton(notificationManagerModel.getDeleteAction());
-        sendRequestButton = new JButton(notificationManagerModel.getDeleteAction());
+        operation.setSelectedIndex(0);
+        operation.addActionListener(this);
+//        notificationTable = new JTable();
+//        notificationTable.setModel(NotificationUtils.createNotificationTableModel( notificationManagerModel.getNotificationSelection()));
+//        notificationTable.setSelectionModel(new SingleListSelectionAdapter(notificationManagerModel.getNotificationSelection().getSelectionIndexHolder()));
+        newButton = new JButton("Submit...");
+        newButton.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                SecurityImpl security =new SecurityImpl(hostnameTxt.getText(),userNameTxt.getText(),passwordTypeTxt.getText(),Integer.parseInt(portNumberTxt.getText()) );
+                String response;
+                // display/center the jdialog when the button is pressed
+                if(operation.getSelectedItem().equals("getAllManagedElements")){
+                    response = security.getAllManagedElements();
+                }else{
+                   response = security.createManagedElement();
+                }
+
+            }
+        });
+//        editButton = new JButton(notificationManagerModel.getEditAction());
+//        deleteButton = new JButton(notificationManagerModel.getDeleteAction());
+//        sendRequestButton = new JButton(notificationManagerModel.getDeleteAction());
     }
     
     private void initEventHandling() {
-        notificationTable.addMouseListener(notificationManagerModel.getDoubleClickHandler());
+//        notificationTable.addMouseListener(notificationManagerModel.getDoubleClickHandler());
     }
     
     // Building ***************************************************************
@@ -112,28 +134,53 @@ public final class NotificationManagerView {
         initComponents();
         initEventHandling();
 
-        FormLayout layout = new FormLayout(
-                "fill:900dlu:grow",
-                "p, 1dlu, fill:500dlu, 6dlu, p");
+        FormLayout layout = new FormLayout(  "right:pref, 3dlu, pref, 7dlu, right:pref, 3dlu, pref", "p, 3dlu, p, 3dlu, p, 9dlu, p, 3dlu, p, 3dlu, p");
                 
         PanelBuilder builder = new PanelBuilder(layout);
         builder.setDefaultDialogBorder();
         CellConstraints cc = new CellConstraints();
-        
-        builder.addTitle("Events",               cc.xy(1, 1));
-        builder.add(new JScrollPane(notificationTable), cc.xy(1, 3));
+        builder.add(operation, cc.xy(1,1));
+        builder.add(newButton, cc.xy(1,3));
+//        builder.addTitle("Events",               cc.xy(1, 1));
+//        builder.add(new JScrollPane(notificationTable), cc.xy(1, 3));
         builder.add(buildButtonBar(),            cc.xy(1, 5));
          
         return builder.getPanel();
     }
 
     private JComponent buildButtonBar() {
-        ButtonBarBuilder builder = new ButtonBarBuilder();
-        builder.addButton(newButton);
-        builder.addButton(editButton);
-        builder.addButton(deleteButton);
+        FormLayout layout = new FormLayout(
+            "right:pref, 3dlu, pref, 7dlu, right:pref, 3dlu, pref", // columns
+            "p, 3dlu, p, 3dlu, p, 9dlu, p, 3dlu, p, 3dlu, p");      // rows
+        layout.setColumnGroups(new int[][]{{1, 5}, {3, 7}});
+        PanelBuilder builder = new PanelBuilder(layout);
+//        ButtonBarBuilder builder = new ButtonBarBuilder();
+
+        CellConstraints cc = new CellConstraints();
+        builder.addLabel("Hostname:",       cc.xy (1,  3));
+        builder.add(hostnameTxt,         cc.xyw(3,  3, 5));
+        builder.addLabel("Port number:",       cc.xy (1,  5));
+        builder.add(portNumberTxt,         cc.xyw(3,  5, 5));
+
+        builder.addLabel("Username:",      cc.xy (1,  9));
+        builder.add(userNameTxt,             cc.xy (3,  9));
+        builder.addLabel("Password type:",    cc.xy (5,  9));
+        builder.add(passwordTypeTxt,           cc.xy (7,  9));
+
+//        builder.addLabel(newButton);
+//        builder.addButton(editButton);
+//        builder.addButton(deleteButton);
         return builder.build();
     }
-    
-    
+
+    public void actionPerformed(ActionEvent e) {
+        JComboBox cb = (JComboBox)e.getSource();
+        String oper = (String)cb.getSelectedItem();
+        updateGui(oper);
+    }
+
+    private void updateGui(String oper) {
+
+    }
+
 }

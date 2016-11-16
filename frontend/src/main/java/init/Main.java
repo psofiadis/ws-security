@@ -15,7 +15,7 @@ import com.adva.mtosi.server.config.WebServerJar;
 public class Main {
     public static void main(String[] args) throws Exception{
         NotificationMainHandler.main(null);
-        new WebServerJar(9090).start();
+        new WebServerJar(9090, 9091).start();
 
     }
 }

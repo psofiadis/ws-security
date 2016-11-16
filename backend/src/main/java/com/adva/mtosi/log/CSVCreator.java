@@ -1,10 +1,3 @@
-/*
- *  Copyright 2016 ADVA Optical Networking SE. All rights reserved.
- *
- *  Owner: ext_psofiadis
- *
- *  $Id: CSVCreator.java 96000 2016-02-08 10:56:27Z ext_psofiadis $
- */
 package com.adva.mtosi.log;
 
 public class CSVCreator {

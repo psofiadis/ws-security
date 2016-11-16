@@ -1,10 +1,3 @@
-/*
- *  Copyright 2016 ADVA Optical Networking SE. All rights reserved.
- *
- *  Owner: ext_psofiadis
- *
- *  $Id: GetActiveAlarmsMediator.java 96000 2016-02-08 10:56:27Z ext_psofiadis $
- */
 package com.adva.mtosi.server;
 
 import org.apache.cxf.frontend.ClientProxy;
@@ -101,8 +94,8 @@ public class GetActiveAlarmsMediator implements AlarmRetrieval {
     Map<String, Object> outProps = new HashMap<>();
 //    outProps.put("action", "UsernameToken Timestamp Signature Encrypt");
     outProps.put("action", "UsernameToken Timestamp");
-    outProps.put("passwordType", "PasswordDigest");
-    outProps.put("user", "nms-client-key");
+    outProps.put("passwordType", "PasswordText");
+    outProps.put("user", "NGAE_BT");
     outProps.put("signaturePropFile", "client-crypto.properties");
     outProps.put("encryptionPropFile", "client-crypto.properties");
     outProps.put("signatureKeyIdentifier", "DirectReference");
@@ -118,7 +111,7 @@ public class GetActiveAlarmsMediator implements AlarmRetrieval {
   private static Map<String, Object> getInProps(){
     Map<String, Object> inProps = new HashMap<>();
     inProps.put("action", "UsernameToken Timestamp");
-    inProps.put("passwordType", "PasswordDigest");
+    inProps.put("passwordType", "PasswordText");
     inProps.put("signaturePropFile", "client-crypto.properties");
     //USE allowRSA15KeyTransportAlgorithm for backward compatibility with cxf 2.5.2
 //    inProps.put("allowRSA15KeyTransportAlgorithm", "true");

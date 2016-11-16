@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.eclipse.jetty.http.HttpVersion;
 import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.apache.tomcat.InstanceManager;
 import org.apache.tomcat.SimpleInstanceManager;
@@ -26,29 +27,37 @@ import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
 import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.ConnectionFactory;
+import org.eclipse.jetty.server.HttpConfiguration;
+import org.eclipse.jetty.server.HttpConnectionFactory;
+import org.eclipse.jetty.server.SecureRequestCustomizer;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.SslConnectionFactory;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.JavaUtilLog;
 import org.eclipse.jetty.util.log.Log;
+import org.eclipse.jetty.util.ssl.SslContextFactory;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 public class WebServerJar {
     private static final String WEBROOT_INDEX = "/webapp/";
-    private int port;
+    private final int port, sslPort;
     private Server server;
     private URI serverURI;
 
-    public WebServerJar(int aPort) {
+    public WebServerJar(int aPort, int sslPort) {
         port = aPort;
+        this.sslPort = sslPort;
     }
 
     public void start() throws Exception
     {
         server = new Server();
         ServerConnector connector = connector();
+        ServerConnector connectorSSL = connectorSSL();
         server.addConnector(connector);
+        server.addConnector(connectorSSL);
 
         URI baseUri = getWebRootResourceUri();
 
@@ -68,9 +77,49 @@ public class WebServerJar {
 
     private ServerConnector connector()
     {
-        ServerConnector connector = new ServerConnector(server);
+        ServerConnector connector = new ServerConnector(server, new HttpConnectionFactory(getHttpConfiguration()));
         connector.setPort(port);
         return connector;
+    }
+    private ServerConnector connectorSSL()
+    {
+        HttpConfiguration https_config = new HttpConfiguration(getHttpConfiguration());
+        https_config.addCustomizer(new SecureRequestCustomizer());
+        ServerConnector connector = new ServerConnector(server, new SslConnectionFactory(getSslContextFactory(), HttpVersion.HTTP_1_1.asString()),  new HttpConnectionFactory(https_config));
+        connector.setPort(sslPort);
+        return connector;
+    }
+
+    private HttpConfiguration getHttpConfiguration(){
+        HttpConfiguration http_config = new HttpConfiguration();
+        http_config.setSecureScheme("https");
+        http_config.setSecurePort(sslPort);
+        http_config.setOutputBufferSize(32768);
+        http_config.setRequestHeaderSize(8192);
+        http_config.setResponseHeaderSize(8192);
+        http_config.setSendServerVersion(true);
+        http_config.setSendDateHeader(false);
+        return http_config;
+    }
+
+
+    private SslContextFactory getSslContextFactory(){
+        SslContextFactory sslContextFactory = new SslContextFactory();
+        sslContextFactory.setKeyStorePath("src/main/resources/client-ssl-keystore");
+        sslContextFactory.setKeyStorePassword("OBF:1d3c19q11sho1jr41jyl1hz51ri31bww1bb31bvy1rib1i2l1k1d1jum1shu19qd1d2u");
+        sslContextFactory.setKeyManagerPassword("OBF:1d3c19q11sho1jr41jyl1hz51ri31bww1bb31bvy1rib1i2l1k1d1jum1shu19qd1d2u");
+        sslContextFactory.setTrustStorePath("src/main/resources/client-ssl-keystore");
+        sslContextFactory.setTrustStorePassword("OBF:1d3c19q11sho1jr41jyl1hz51ri31bww1bb31bvy1rib1i2l1k1d1jum1shu19qd1d2u");
+        sslContextFactory.setExcludeCipherSuites("SSL_RSA_WITH_DES_CBC_SHA",
+            "SSL_DHE_RSA_WITH_DES_CBC_SHA", "SSL_DHE_DSS_WITH_DES_CBC_SHA",
+            "SSL_RSA_EXPORT_WITH_RC4_40_MD5",
+            "SSL_RSA_EXPORT_WITH_DES40_CBC_SHA",
+            "SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA",
+            "SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA");
+
+
+        return sslContextFactory;
+
     }
 
     private URI getWebRootResourceUri() throws FileNotFoundException, URISyntaxException

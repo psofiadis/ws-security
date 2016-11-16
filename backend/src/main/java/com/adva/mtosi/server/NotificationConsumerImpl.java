@@ -9,8 +9,6 @@
 package com.adva.mtosi.server;
 
 import com.adva.mtosi.Utils.MtosiAddress;
-import com.adva.mtosi.gui.NotificationMainHandler;
-import com.adva.mtosi.gui.beans.Notification;
 import com.adva.mtosi.log.CSVCreator;
 import com.adva.mtosi.log.CSVWriter;
 import com.sun.org.apache.xerces.internal.dom.ElementNSImpl;
@@ -50,24 +48,6 @@ public class NotificationConsumerImpl implements NotificationConsumer{
         String neTime = formatter.format(alarmType.getSourceTime().toGregorianCalendar().getTime());
 
 
-        Notification notification = NotificationMainHandler.notificationManager.createItem(
-                address.getMdName(),address.getMeName(),address.getMtosiAddress(),
-                alarmType.getAdditionalText(),
-                nmsTime,
-                alarmType.getNativeProbableCause(),
-//                getVendorAttributeValue(objects, "ModuleType"),
-//                getVendorAttributeValue(objects, "EntityAlias"),
-                neTime,
-                alarmType.getServiceAffecting().value(),
-                alarmType.getPerceivedSeverity().value(),
-                alarmType.getX733EventType(),
-            alarmType.getNotificationId(),
-            null,//alarmType.getProbableCause().toString(),
-            null //alarmType.getLayerRate()
-//                "True".equals(getVendorAttributeValue(objects, "Security")),
-//                getVendorAttributeValue(objects, "Impairment")
-        );
-
         CSVWriter.info(
             new CSVCreator(
                 address.getMdName(),address.getMeName(),address.getMtosiAddress(),
@@ -84,7 +64,6 @@ public class NotificationConsumerImpl implements NotificationConsumer{
             )
         );
 
-        NotificationMainHandler.notificationManager.addItem(notification);
       }
     }
   }

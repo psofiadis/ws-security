@@ -51,8 +51,8 @@ http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schema
     <bean class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor" id="outbound-security">
         <constructor-arg>
             <map>
-                <entry key="action" value="Timestamp Signature Encrypt"/>
-                <entry key="user" value="nms-client-key"/>
+                <entry key="action" value="Timestamp UsernameToken"/>
+                <entry key="user" value="NGAE_BT"/>
                 <entry key="signaturePropFile" value="client-crypto.properties"/>
                 <entry key="encryptionPropFile" value="client-crypto.properties"/>
                 <entry key="signatureKeyIdentifier" value="DirectReference"/>
@@ -67,7 +67,7 @@ http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schema
     <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor" id="inbound-security">
         <constructor-arg>
             <map>
-                <entry key="action" value="Timestamp Signature Encrypt"/>
+                <entry key="action" value="Timestamp UsernameToken"/>
                 <entry key="signaturePropFile" value="client-crypto.properties"/>
                 <entry key="decryptionPropFile" value="client-crypto.properties"/>
                 <entry key="passwordCallbackClass" value="com.adva.mtosi.server.config.ClientPasswordCallback"/>
@@ -89,10 +89,10 @@ http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schema
                     implementor="com.adva.mtosi.server.GetActiveAlarmsMediator"
                     address="/GetActiveAlarmsMediator">
         <jaxws:inInterceptors>
-            <ref bean="inbound-security" />
+            <!--<ref bean="inbound-security" />-->
         </jaxws:inInterceptors>
         <jaxws:outInterceptors>
-            <ref bean="outbound-security" />
+            <!--<ref bean="outbound-security" />-->
         </jaxws:outInterceptors>
     </jaxws:endpoint>
 

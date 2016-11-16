@@ -153,16 +153,12 @@
               <sourceRoot>${project.build.directory}/generated/cxf</sourceRoot>
               <wsdlOptions>
                 <wsdlOption>
-                  <wsdl>${project.basedir}/src/main/resources/DDPs/Framework/IIS/wsdl/NotificationProducer/NotificationProducerHttp.wsdl</wsdl>
-                  <wsdlLocation>classpath:wsdl/NotificationProducerHttp.wsdl</wsdlLocation>
+                  <wsdl>${project.basedir}/src/main/resources/DDPs/ManageResourceInventory/IIS/wsdl/ManagedElementControl/ManagedElementControlHttp.wsdl</wsdl>
+                  <wsdlLocation>classpath:wsdl/ManagedElementControlHttp.wsdl</wsdlLocation>
                 </wsdlOption>
                 <wsdlOption>
-                  <wsdl>${project.basedir}/src/main/resources/DDPs/Framework/IIS/wsdl/NotificationConsumer/NotificationConsumerHttp.wsdl</wsdl>
+                  <wsdl>${project.basedir}/src/main/resources/DDPs/ManageResourceInventory/IIS/wsdl/ManagedElementRetrieval/ManagedElementRetrievalHttp.wsdl</wsdl>
                   <wsdlLocation>classpath:wsdl/NotificationProducerHttp.wsdl</wsdlLocation>
-                </wsdlOption>
-                <wsdlOption>
-                  <wsdl>${project.basedir}/src/main/resources/DDPs/ResourceTroubleManagement/IIS/wsdl/AlarmRetrieval/AlarmRetrievalHttp.wsdl</wsdl>
-                  <wsdlLocation>classpath:wsdl/AlarmRetrievalHttp.wsdl</wsdlLocation>
                 </wsdlOption>
               </wsdlOptions>
             </configuration>
@@ -199,7 +195,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <version>4.0.2.RELEASE</version>
+      <version>4.2.2.RELEASE</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -218,10 +214,10 @@
     <jetty-maven-plugin.version>9.3.1-SNAPSHOT</jetty-maven-plugin.version>
     <jsp.api.version>2.1</jsp.api.version>
     <servlet.version>2.5</servlet.version>
-    <webapp.name>lbk-client</webapp.name>
+    <webapp.name>ws-security-client</webapp.name>
     <cxf.version>3.1.5</cxf.version>
     <logback.version>1.1.2</logback.version>
-    <spring.version>4.0.2.RELEASE</spring.version>
+    <spring.version>4.2.2.RELEASE</spring.version>
   </properties>
 </project>
 
